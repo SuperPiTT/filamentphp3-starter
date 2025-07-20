@@ -1,5 +1,26 @@
 #!/bin/sh
 
+
+# Instala Laravel si no existe artisan
+if [ ! -f /var/www/html/artisan ]; then
+    echo "No se encontró artisan. Borrando todo e instalando Laravel..."
+    # Borra absolutamente todo, incluyendo archivos y carpetas ocultas
+    for item in /var/www/html/* /var/www/html/.[!.]* /var/www/html/..?*; do
+        [ -e "$item" ] && rm -rf "$item"
+    done
+    composer create-project laravel/laravel /var/www/html
+
+    # Configura el archivo .env con los datos de conexión a MariaDB usando variables de entorno
+    if [ -f /var/www/html/.env ]; then
+        sed -i "s/^DB_CONNECTION=.*/DB_CONNECTION=mysql/" /var/www/html/.env
+        sed -i "s/^DB_HOST=.*/DB_HOST=${DB_HOST:-pit_db}/" /var/www/html/.env
+        sed -i "s/^DB_PORT=.*/DB_PORT=${DB_PORT:-3306}/" /var/www/html/.env
+        sed -i "s/^DB_DATABASE=.*/DB_DATABASE=${DB_DATABASE:-pit}/" /var/www/html/.env
+        sed -i "s/^DB_USERNAME=.*/DB_USERNAME=${DB_USERNAME:-pit}/" /var/www/html/.env
+        sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=${DB_PASSWORD:-pit}/" /var/www/html/.env
+    fi
+fi
+
 # Cambia el propietario de los archivos montados si es necesario
 if [ -d /var/www/html ]; then
     chown -R ${user:-app}:${group:-app} /var/www/html || true

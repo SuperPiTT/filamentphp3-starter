@@ -33,7 +33,10 @@ DB_PRIMARY_ROOT_PASSWORD=pit
 APP_PORT=8000
 ```
 
-El archivo `.env` dentro de `laravel/` controla la configuración de Laravel y la conexión a la base de datos.
+
+El archivo `.env` dentro de `laravel/` controla la configuración de Laravel. **La conexión a la base de datos se configura automáticamente** al levantar el contenedor, usando las variables de entorno definidas en el `.env` de la raíz y el `docker-compose.yml` (por ejemplo: `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_PORT`).
+
+No es necesario editar manualmente el `.env` de Laravel para la base de datos: el script de inicio lo ajusta automáticamente según los valores de entorno del contenedor.
 
 ## Primer uso
 1. Clona el repositorio y entra en la carpeta del proyecto.
